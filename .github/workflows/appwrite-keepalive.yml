@@ -1,0 +1,36 @@
+name: Appwrite Keepalive
+
+on:
+  schedule:
+    # Runs every Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+    # Allows manual trigger
+
+jobs:
+  toggle-index:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run toggle_index.py
+        env:
+          APPWRITE_PROJECT_ID: ${{ secrets.APPWRITE_PROJECT_ID }}
+          APPWRITE_API_KEY: ${{ secrets.APPWRITE_API_KEY }}
+          APPWRITE_DATABASE_ID: ${{ secrets.APPWRITE_DATABASE_ID }}
+          APPWRITE_TABLE_ID: ${{ secrets.APPWRITE_TABLE_ID }}
+          APPWRITE_INDEX_KEY: ${{ secrets.APPWRITE_INDEX_KEY }}
+          APPWRITE_ATTRIBUTE: ${{ secrets.APPWRITE_ATTRIBUTE }}
+        run: python toggle_index.py
